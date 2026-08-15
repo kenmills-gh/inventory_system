@@ -1,0 +1,26 @@
+# Environments
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Python / Byte-compiled / Optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# VS Code 
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Flask instance folder (if you end up using one later)
+instance/
