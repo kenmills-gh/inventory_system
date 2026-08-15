@@ -81,5 +81,40 @@ def add_item():
     return jsonify(new_item), 201
 
 
+@app.route("/inventory/<int:item_id>", methods=["PATCH"])
+def update_item(item_id):
+    item = next((i for i in inventory_db if i["id"] == item_id), None)
+    if not item:
+        return jsonify({"error": "Item not found"}), 404
+
+    data = request.json
+    if "stock" in data:
+        item["stock"] = data["stock"]
+    if "price" in data:
+        item["price"] = data["price"]
+
+    return jsonify(item), 200
+
+
+@app.route("/inventory/<int:item_id>", methods=["DELETE"])
+def delete_item(item_id):
+    global inventory_db
+    initial_length = len(inventory_db)
+    inventory_db = [i for i in inventory_db if i["id"] != item_id]
+
+    if len(inventory_db) < initial_length:
+        return jsonify({"message": "Item deleted"}), 200
+    return jsonify({"error": "item not found"}), 404
+
+
+# Helper Route to query the OpenFoodFacts db directly without modifying your local inventory.
+@app.route("/external/<barcode>", methods=["GET"])
+def search_external(barcode):
+    data = fetch_external_product(barcode)
+    if data:
+        return jsonify(data), 200
+    return jsonify({"error": "Product not found"}), 404
+
+
 if __name__ == "__main__":
     app.run(debug=True)
